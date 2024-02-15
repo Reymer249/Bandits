@@ -15,16 +15,24 @@ class EgreedyPolicy:
     def __init__(self, n_actions=10):
         self.n_actions = n_actions
         # TO DO: Add own code
+        self.Q_a = np.zeros(n_actions)
+        self.pi_a = np.zeros(n_actions)
+        self.n_a = 0
         pass
         
     def select_action(self, epsilon):
         # TO DO: Add own code
-        a = np.random.randint(0,self.n_actions) # Replace this with correct action selection
-        return a
+        for action_number in range(len(self.Q_a)):
+            if action_number == np.argmax(self.Q_a):
+                self.pi_a[action_number] = 1 - epsilon
+            else:
+                self.pi_a[action_number] = epsilon / (len(self.Q_a) - 1)
+        return np.argmax(self.pi_a)
         
-    def update(self,a,r):
+    def update(self, action_number, reward):
         # TO DO: Add own code
-        pass
+        self.n_a += 1
+        self.Q_a[action_number] = self.Q_a[action_number] + 1/self.n_a * (reward - self.Q_a[action_number])
 
 class OIPolicy:
 
