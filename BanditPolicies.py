@@ -23,8 +23,9 @@ class EgreedyPolicy:
 
     def select_action(self, epsilon):
         # TO DO: Add own code
+        max_reward_number = np.argmax(self.Q_a)
         for action_number in range(len(self.Q_a)):
-            if action_number == np.argmax(self.Q_a):
+            if action_number == max_reward_number:
                 self.pi_a[action_number] = 1 - epsilon
             else:
                 self.pi_a[action_number] = epsilon / (len(self.Q_a) - 1)
