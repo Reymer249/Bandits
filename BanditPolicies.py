@@ -19,12 +19,11 @@ class EgreedyPolicy:
         self.Q_a = np.zeros(n_actions)
         self.pi_a = np.zeros(n_actions)
         self.n_a = 0
-        pass
 
     def select_action(self, epsilon):
         # TO DO: Add own code
         max_reward_number = np.argmax(self.Q_a)
-        for action_number in range(len(self.Q_a)):
+        for action_number in range(len(self.pi_a)):
             if action_number == max_reward_number:
                 self.pi_a[action_number] = 1 - epsilon
             else:
@@ -42,16 +41,16 @@ class OIPolicy:
     def __init__(self, n_actions=10, initial_value=0.0, learning_rate=0.1):
         self.n_actions = n_actions
         # TO DO: Add own code
-        pass
+        self.Q_a = np.full(shape=n_actions, fill_value=initial_value)
+        self.learning_rate = learning_rate
 
     def select_action(self):
         # TO DO: Add own code
-        a = np.random.randint(0, self.n_actions)  # Replace this with correct action selection
-        return a
+        return np.argmax(self.Q_a)
 
-    def update(self, a, r):
+    def update(self, action_number, reward):
         # TO DO: Add own code
-        pass
+        self.Q_a = self.Q_a + self.learning_rate*(reward - self.Q_a)
 
 
 class UCBPolicy:

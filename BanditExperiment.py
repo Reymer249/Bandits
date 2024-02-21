@@ -47,10 +47,9 @@ def experiment(n_actions, n_timesteps, n_repetitions, smoothing_window):
             n_actions=n_actions,
             n_timesteps=n_timesteps,
             n_rep=n_repetitions,
-            smoothing_window=smoothing_window,
             epsilon=epsilon
         )
-        egreedy_graph.add_curve(y=curve, label=f"e={epsilon}")
+        egreedy_graph.add_curve(y=smooth(y=curve, window=smoothing_window), label=f"e={epsilon}")
     egreedy_graph.save(name="egreedy_epsilons_plot.png")
     
     # Assignment 2: Optimistic init
