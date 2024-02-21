@@ -15,14 +15,14 @@ class BanditEnvironment:
     def __init__(self, n_actions):
         ''' Initializes a bandit environment'''
         self.n_actions = n_actions
-        self.means = np.random.uniform(low=0.0,high=1.0,size=n_actions)
+        self.means = np.random.uniform(low=0.0, high=1.0, size=n_actions)
         #self.means = np.random.normal(loc=0.0,scale=1.0,size=n_actions) # alternative bandit definitions are possible
         self.best_action = np.argmax(self.means)
         self.best_average_return = np.max(self.means)
     
     def act(self,a):
         ''' returns a sampled reward for action a ''' 
-        r = np.random.binomial(1,self.means[a])
+        r = np.random.binomial(1, self.means[a])
         #r= np.random.normal(loc=self.means[a],scale=1.0) # alternative bandit definitions are possible
         return r
 
