@@ -18,7 +18,7 @@ class EgreedyPolicy:
         # TO DO: Add own code
         self.Q_a = np.zeros(n_actions)
         self.pi_a = np.zeros(n_actions)
-        self.n_a = 0
+        self.n_a = np.zeros(n_actions)
 
     def select_action(self, epsilon):
         # TO DO: Add own code
@@ -32,8 +32,8 @@ class EgreedyPolicy:
 
     def update(self, action_number, reward):
         # TO DO: Add own code
-        self.n_a += 1
-        self.Q_a[action_number] = self.Q_a[action_number] + 1 / self.n_a * (reward - self.Q_a[action_number])
+        self.n_a[action_number] += 1
+        self.Q_a[action_number] = self.Q_a[action_number] + 1 / self.n_a[action_number] * (reward - self.Q_a[action_number])
 
 
 class OIPolicy:
