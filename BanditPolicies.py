@@ -50,7 +50,7 @@ class OIPolicy:
 
     def update(self, action_number, reward):
         # TO DO: Add own code
-        self.Q_a = self.Q_a + self.learning_rate*(reward - self.Q_a)
+        self.Q_a[action_number] = self.Q_a[action_number] + self.learning_rate*(reward - self.Q_a[action_number])
 
 
 class UCBPolicy:
