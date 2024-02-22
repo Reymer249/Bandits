@@ -24,9 +24,9 @@ def run_repetitions(
 ):
     total_reward = np.zeros(num_timesteps)
     for _ in tqdm(range(n_rep)):
+        bandit = BanditEnvironment(n_actions=num_actions)
         average_reward = np.zeros(num_timesteps)
         cum_reward = 0
-        bandit = BanditEnvironment(n_actions=num_actions)
         if policy_type == OIPolicy:
             policy = policy_type(
                 n_actions=num_actions,
@@ -45,75 +45,141 @@ def run_repetitions(
             reward = bandit.act(a=action_number)
             cum_reward += reward
             policy.update(action_number=action_number, reward=reward)
-            average_reward[timestep] = cum_reward / (timestep + 1)
+            average_reward[timestep] = cum_reward / timestep
         total_reward += average_reward
 
     return total_reward / n_rep
 
 
-def experiment(n_actions, n_timesteps, n_repetitions, smoothing_window):
+def experiment(
+        n_actions: int,
+        n_timesteps: int,
+        n_repetitions: int,
+        smoothing_window: int,
+        epsilons: list,
+        initial_values: list,
+        c_values: list
+) -> None:
     # To Do: Write all your experiment code here
 
     # Assignment 1: e-greedy
-    egreedy_graph = LearningCurvePlot(title="e-greedy learning curves")
-    epsilons = [0.01, 0.05, 0.1, 0.25]
-    for epsilon in epsilons:
+    egreedy_graph = LearningCurvePlot(title="E-greedy learning curves based on epsilon hyperparameter")
+    epsilons_end_avg_reward = np.zeros(len(epsilons))
+    for i in range(len(epsilons)):
         curve = run_repetitions(
             num_actions=n_actions,
             num_timesteps=n_timesteps,
             n_rep=n_repetitions,
             policy_type=EgreedyPolicy,
-            epsilon=epsilon
+            epsilon=epsilons[i]
         )
-        egreedy_graph.add_curve(y=smooth(y=curve, window=smoothing_window), label=f"e={epsilon}")
-    egreedy_graph.save(name="egreedy_epsilons_plot.png")
+        egreedy_graph.add_curve(y=smooth(y=curve, window=smoothing_window), label=f"e={epsilons[i]}")
+        epsilons_end_avg_reward[i] = curve[-1]
+    egreedy_graph.save(name="egreedy_epsilons_graph.png")
 
     # Assignment 2: Optimistic init
-    optimistic_graph = LearningCurvePlot(title="optimistic learning curves")
-    initial_values = [0.1, 0.5, 1.0, 2.0]
-    for initial_value in initial_values:
+    optimistic_graph = LearningCurvePlot(title="OI learn. curves based on init. val. hyperparam. (learn. rate = 0.1)")
+    initial_values_end_avg_reward = np.zeros(len(initial_values))
+    for i in range(len(initial_values)):
         curve = run_repetitions(
             num_actions=n_actions,
             num_timesteps=n_timesteps,
             n_rep=n_repetitions,
             policy_type=OIPolicy,
-            initial_value=initial_value,
-            learning_rate=0.1
+            initial_value=initial_values[i],
+            learning_rate=0.1  # fixed for our experiments
         )
         optimistic_graph.add_curve(
             y=smooth(y=curve, window=smoothing_window),
-            label=f"init_v={initial_value}"
+            label=f"init_val={initial_values[i]}"
         )
-    optimistic_graph.save(name="optimistic_plot.png")
+        initial_values_end_avg_reward[i] = curve[-1]
+    optimistic_graph.save(name="optimistic_initials_graph.png")
 
     # Assignment 3: UCB
-    ucb_graph = LearningCurvePlot(title="UCB learning curves")
-    c_values = [0.01, 0.05, 0.1, 0.25, 0.5, 1.0]
-    for c_value in c_values:
+    ucb_graph = LearningCurvePlot(title="UCB learning curves based on exploration constant hyperparameter")
+    c_values_end_avg_reward = np.zeros(len(c_values))
+    for i in range(len(c_values)):
         curve = run_repetitions(
             num_actions=n_actions,
             num_timesteps=n_timesteps,
             n_rep=n_repetitions,
             policy_type=UCBPolicy,
-            c=c_value
+            c=c_values[i]
         )
         ucb_graph.add_curve(
             y=smooth(y=curve, window=smoothing_window),
-            label=f"c={c_value}"
+            label=f"c={c_values[i]}"
         )
-    ucb_graph.save(name="ucb_plot.png")
+        c_values_end_avg_reward[i] = curve[-1]
+    ucb_graph.save(name="ucb_constants_graph.png")
 
     # Assignment 4: Comparison
+    # Comparison plot
+    comparison_plot = ComparisonPlot(title="Average end reward based on alg. and hyperparameter value")
+    comparison_plot.add_curve(x=epsilons, y=epsilons_end_avg_reward, label="E-greedy")
+    comparison_plot.add_curve(x=initial_values, y=initial_values_end_avg_reward, label="Optimistic Initialization (alpha=0.1)")
+    comparison_plot.add_curve(x=c_values, y=c_values_end_avg_reward, label="UCB")
+    comparison_plot.save("comparison_graph.png")
 
-    pass
+    # Optimal cases plot
+    optimal_cases_plot = LearningCurvePlot(title="Learning curves of algs. with optimal hyperparameters")
+    epsilon_optimal = epsilons[np.argmax(epsilons_end_avg_reward)]
+    epsilon_optimal_curve = run_repetitions(
+        num_actions=n_actions,
+        num_timesteps=n_timesteps,
+        n_rep=n_repetitions,
+        policy_type=EgreedyPolicy,
+        epsilon=epsilon_optimal
+    )
+    optimal_cases_plot.add_curve(
+        y=smooth(y=epsilon_optimal_curve, window=smoothing_window),
+        label=f"E-greedy (e={epsilon_optimal})"
+    )
+    initial_value_optimal = initial_values[np.argmax(initial_values_end_avg_reward)]
+    oi_optimal_curve = run_repetitions(
+        num_actions=n_actions,
+        num_timesteps=n_timesteps,
+        n_rep=n_repetitions,
+        policy_type=OIPolicy,
+        initial_value=initial_value_optimal,
+        learning_rate=0.1  # fixed for our experiments
+    )
+    optimal_cases_plot.add_curve(
+        y=smooth(y=oi_optimal_curve, window=smoothing_window),
+        label=f"Optimistic init. (init_val={initial_value_optimal})"
+    )
+    c_optimal = c_values[np.argmax(c_values_end_avg_reward)]
+    ucb_optimal_curve = run_repetitions(
+        num_actions=n_actions,
+        num_timesteps=n_timesteps,
+        n_rep=n_repetitions,
+        policy_type=UCBPolicy,
+        c=c_optimal
+    )
+    optimal_cases_plot.add_curve(
+        y=smooth(y=ucb_optimal_curve, window=smoothing_window),
+        label=f"UCB (c={c_optimal})"
+    )
+    optimal_cases_plot.save(name="optimal_comparison_graph.png")
 
 
 if __name__ == '__main__':
     # experiment settings
-    n_actions = 10
-    n_repetitions = 500
-    n_timesteps = 1000
-    smoothing_window = 31
+    number_actions = 10
+    number_repetitions = 500
+    number_timesteps = 1000
+    smoothing_w = 31
+    epsilons_exp_values = [0.01, 0.05, 0.1, 0.25]
+    initial_exp_values = [0.1, 0.5, 1.0, 2.0]
+    c_exp_values = [0.01, 0.05, 0.1, 0.25, 0.5, 1.0]
 
-    experiment(n_actions=n_actions, n_timesteps=n_timesteps,
-               n_repetitions=n_repetitions, smoothing_window=smoothing_window)
+    experiment(
+        n_actions=number_actions,
+        n_timesteps=number_timesteps,
+        n_repetitions=number_repetitions,
+        smoothing_window=smoothing_w,
+        epsilons=epsilons_exp_values,
+        initial_values=initial_exp_values,
+        c_values=c_exp_values
+    )
