@@ -33,7 +33,7 @@ class EgreedyPolicy:
     def update(self, action_number, reward):
         # TO DO: Add own code
         self.n_a[action_number] += 1
-        self.Q_a[action_number] = self.Q_a[action_number] + 1 / self.n_a[action_number] * (reward - self.Q_a[action_number])
+        self.Q_a[action_number] = self.Q_a[action_number] + (1 / self.n_a[action_number]) * (reward - self.Q_a[action_number])
 
 
 class OIPolicy:
@@ -69,7 +69,7 @@ class UCBPolicy:
     def update(self, action_number, reward):
         # TO DO: Add own code
         self.n_a[action_number] += 1
-        self.Q_a[action_number] = self.Q_a[action_number] + 1 / self.n_a[action_number] * (reward - self.Q_a[action_number])
+        self.Q_a[action_number] = self.Q_a[action_number] + (1 / self.n_a[action_number]) * (reward - self.Q_a[action_number])
 
 
 def test():
