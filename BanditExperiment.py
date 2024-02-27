@@ -12,8 +12,6 @@ from BanditEnvironment import BanditEnvironment
 from BanditPolicies import EgreedyPolicy, OIPolicy, UCBPolicy
 from Helper import LearningCurvePlot, ComparisonPlot, smooth
 
-from tqdm import tqdm  # DELETE later
-
 
 def run_repetitions(
         num_actions: int,
@@ -23,7 +21,7 @@ def run_repetitions(
         **kwargs
 ):
     total_reward = np.zeros(num_timesteps)
-    for _ in tqdm(range(n_rep)):
+    for _ in range(n_rep):
         # Clear bandit environment
         bandit = BanditEnvironment(n_actions=num_actions)
         average_reward = np.zeros(num_timesteps)
@@ -37,7 +35,8 @@ def run_repetitions(
             )
         else:
             policy = policy_type(n_actions=num_actions)
-        # Run the single repetition of the experiment
+        # Run the experiment (num_timesteps-1) times
+        # We leave the 0th value as 0 so that it looks more intuitive on a graph
         for timestep in range(1, num_timesteps):
             # Sample next action
             if policy_type == EgreedyPolicy:
