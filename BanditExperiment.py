@@ -80,7 +80,8 @@ def run_repetitions_cum_reward(
             )
         else:
             policy = policy_type(n_actions=num_actions)
-        # Run the single repetition of the experiment
+        # Run the experiment (num_timesteps-1) times
+        # We leave the 0th value as 0 so that it looks more intuitive on a graph
         for timestep in range(1, num_timesteps):
             # Sample next action
             if policy_type == EgreedyPolicy:
