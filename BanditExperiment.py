@@ -266,7 +266,7 @@ def experiment(
     optimal_cases_plot = LearningCurvePlot(title="Learning curves of algs. with optimal hyperparameters")
     # Find optimal epsilon for e-greedy
     epsilon_optimal = epsilons[np.argmax(epsilons_end_avg_reward_1)]
-    epsilon_optimal_curve = run_repetitions_cum_reward(
+    epsilon_optimal_curve = run_repetitions(
         num_actions=n_actions,
         num_timesteps=n_timesteps,
         n_rep=n_repetitions,
@@ -275,12 +275,12 @@ def experiment(
     )
     # Add e-greedy to the plot
     optimal_cases_plot.add_curve(
-        y=smooth(y=epsilon_optimal_curve, window=smoothing_window),
+        y=smooth(y=epsilon_optimal_curve[0], window=smoothing_window),
         label=f"E-greedy (e={epsilon_optimal})"
     )
     # Find optimal initial value for OI
     initial_value_optimal = initial_values[np.argmax(initial_values_end_avg_reward_1)]
-    oi_optimal_curve = run_repetitions_cum_reward(
+    oi_optimal_curve = run_repetitions(
         num_actions=n_actions,
         num_timesteps=n_timesteps,
         n_rep=n_repetitions,
@@ -290,12 +290,12 @@ def experiment(
     )
     # Add OI to the plot
     optimal_cases_plot.add_curve(
-        y=smooth(y=oi_optimal_curve, window=smoothing_window),
+        y=smooth(y=oi_optimal_curve[0], window=smoothing_window),
         label=f"Optimistic init. (init_val={initial_value_optimal})"
     )
     # Find optimal c for UCB
     c_optimal = c_values[np.argmax(c_values_end_avg_reward_1)]
-    ucb_optimal_curve = run_repetitions_cum_reward(
+    ucb_optimal_curve = run_repetitions(
         num_actions=n_actions,
         num_timesteps=n_timesteps,
         n_rep=n_repetitions,
@@ -304,7 +304,7 @@ def experiment(
     )
     # Add UCB to the plot
     optimal_cases_plot.add_curve(
-        y=smooth(y=ucb_optimal_curve, window=smoothing_window),
+        y=smooth(y=ucb_optimal_curve[0], window=smoothing_window),
         label=f"UCB (c={c_optimal})"
     )
     # Save the plot
