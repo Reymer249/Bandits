@@ -14,10 +14,12 @@ from scipy.signal import savgol_filter
 
 class LearningCurvePlot:
 
-    def __init__(self,title=None):
+    def __init__(self,title=None, ylabel=None):
         self.fig,self.ax = plt.subplots()
+        if ylabel is None:
+            ylabel = 'Reward'
         self.ax.set_xlabel('Time')
-        self.ax.set_ylabel('Reward')      
+        self.ax.set_ylabel(ylabel)      
         self.ax.set_ylim([0,1.0])
         if title is not None:
             self.ax.set_title(title)

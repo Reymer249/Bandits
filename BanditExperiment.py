@@ -138,7 +138,7 @@ def experiment(
     egreedy_graph.save(name="egreedy_epsilons_graph.png")
 
     # Finding general performance plot (where each point represents not a reward, but average reward over previous timesteps)
-    egreedy_graph = LearningCurvePlot(title="E-greedy performance curves based on epsilon hyperparameter")
+    egreedy_graph = LearningCurvePlot(title="E-greedy performance curves based on epsilon hyperparameter", ylabel = 'Average reward')
     # Run the experiment for each epsilon value
     for i in range(len(epsilons)):
         curve = run_repetitions_cum_reward(
@@ -180,7 +180,7 @@ def experiment(
     optimistic_graph.save(name="optimistic_initials_graph.png")
 
     # Finding general performance plot (where each point represents not a reward, but average reward over previous timesteps)
-    optimistic_graph = LearningCurvePlot(title="OI performance curves based on init_val hyperparameter")
+    optimistic_graph = LearningCurvePlot(title="OI performance curves based on init_val hyperparameter", ylabel = 'Average reward')
     # Run the experiment for each initial value
     for i in range(len(initial_values)):
         curve = run_repetitions_cum_reward(
@@ -223,7 +223,7 @@ def experiment(
     ucb_graph.save(name="ucb_constants_graph.png")
     
     # Finding general performance plot (where each point represents not a reward, but average reward over previous timesteps)
-    ucb_graph = LearningCurvePlot(title="UCB performance curves based on exploration constant hyperparameter")
+    ucb_graph = LearningCurvePlot(title="UCB performance curves based on exploration constant hyperparameter", ylabel = 'Average reward')
     # Run the experiment for each value for c
     for i in range(len(c_values)):
         curve = run_repetitions_cum_reward(
