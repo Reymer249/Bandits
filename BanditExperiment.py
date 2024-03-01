@@ -13,8 +13,6 @@ from BanditEnvironment import BanditEnvironment
 from BanditPolicies import EgreedyPolicy, OIPolicy, UCBPolicy
 from Helper import LearningCurvePlot, ComparisonPlot, smooth
 
-from tqdm import tqdm  # DELETE later
-
 # The result are curves with averaged reward over repetitions
 def run_repetitions(num_actions: int,
         num_timesteps: int,
@@ -26,7 +24,7 @@ def run_repetitions(num_actions: int,
     # For additional comparison over last rewards (at the last timestep)
     last_reward = 0
     average_last_reward = 0
-    for _ in tqdm(range(n_rep)):
+    for _ in range(n_rep):
         # Clear bandit environment
         bandit = BanditEnvironment(n_actions=num_actions)
         # Initialise policy, declare correct arguments depending on policy type
@@ -68,7 +66,7 @@ def run_repetitions_cum_reward(
         **kwargs
 ):
     total_reward = np.zeros(num_timesteps)
-    for _ in tqdm(range(n_rep)):
+    for _ in range(n_rep):
         # Clear bandit environment
         bandit = BanditEnvironment(n_actions=num_actions)
         average_reward = np.zeros(num_timesteps)
