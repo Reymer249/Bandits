@@ -43,6 +43,6 @@ We investigate and compare different action-selection policies in a simplified n
 Clone the repository and install dependencies:
 
 ```bash
-git clone https://github.com/<your-username>/<repo-name>.git
-cd <repo-name>
+git clone https://github.com/Reymer249/Bandits.git
+cd Bandits
 pip install -r requirements.txt
